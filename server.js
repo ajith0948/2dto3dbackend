@@ -53,7 +53,8 @@ app.use(globalLimiter);
 // Allow any localhost port (Vite picks 5173, 5174, etc. automatically)
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || origin.match(/^http:\/\/localhost:\d+$/)) {
+    const allowedFrontend = process.env.FRONTEND_URL;
+    if (!origin || origin.match(/^http:\/\/localhost:\d+$/) || origin === allowedFrontend) {
       callback(null, true);
     } else {
       callback(new Error('CORS: origin not allowed'));
