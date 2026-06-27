@@ -396,7 +396,7 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
 
     // Create reset URL
     const config = readDataFile();
-    const frontendUrl = process.env.FRONTEND_URL || config.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL;
     const resetUrl = `${frontendUrl}?page=reset-password&token=${resetToken}`;
 
     // Standard local terminal output is CRITICAL so the developer can run resets easily
