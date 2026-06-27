@@ -22,16 +22,21 @@ console.log('='.repeat(60));
 let config;
 try {
   config = readDataFile();
-  console.log(`  Active Model   : ${config.MODEL_NAME}`);
-  console.log(`  AI Service URL : ${config.AI_SERVICE_URL}`);
-  console.log(`  MongoDB URI    : ${process.env.MONGODB_URI || config.MONGODB_URI}`);
+  if (config.MODEL_NAME) {
+    console.log(`  Active Model   : ${config.MODEL_NAME}`);
+    console.log(`  AI Service URL : ${config.AI_SERVICE_URL}`);
+  }
+  console.log(`  MongoDB URI    : ${process.env.MONGODB_URI ? '(set via .env)' : config.MONGODB_URI || 'not configured'}`);
   console.log('='.repeat(60) + '\n');
 } catch (err) {
-  console.error('FATAL: Cannot read data.txt -', err.message);
-  process.exit(1);
+  console.warn('WARNING: Cannot read data.txt -', err.message, '(using env vars only)');
+  config = {};
 }
 
 const app = express();
+
+// Trust proxy for Render / cloud deployments (required for rate limiting & X-Forwarded-For)
+app.set('trust proxy', 1);
 
 // ── Security & Rate Limiting ──────────────────────────────────────────
 // Apply Helmet for robust security headers

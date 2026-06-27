@@ -9,6 +9,8 @@ const path = require('path');
 
 const DATA_FILE_PATH = process.env.DATA_FILE_PATH || path.join(__dirname, '..', '..', 'data.txt');
 
+let _cloudModeLogged = false;
+
 /**
  * Read and parse data.txt into a key-value object.
  * Lines starting with # are comments and are skipped.
@@ -17,7 +19,10 @@ const DATA_FILE_PATH = process.env.DATA_FILE_PATH || path.join(__dirname, '..', 
 function readDataFile() {
   try {
     if (!fs.existsSync(DATA_FILE_PATH)) {
-      console.warn('[dataManager] data.txt not found — using environment variables only (cloud mode).');
+      if (!_cloudModeLogged) {
+        console.warn('[dataManager] data.txt not found — using environment variables only (cloud mode).');
+        _cloudModeLogged = true;
+      }
       return {};
     }
     const content = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
