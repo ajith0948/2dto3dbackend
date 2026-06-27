@@ -46,6 +46,10 @@ function readDataFile() {
  */
 function updateDataFile(updates) {
   try {
+    if (!fs.existsSync(DATA_FILE_PATH)) {
+      // Cloud mode — no data.txt, skip silently
+      return;
+    }
     let content = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
     for (const [key, value] of Object.entries(updates)) {
       const regex = new RegExp(`^${key}=.*$`, 'm');
@@ -63,7 +67,6 @@ function updateDataFile(updates) {
     console.log('[dataManager] data.txt updated:', Object.keys(updates).join(', '));
   } catch (err) {
     console.error('[dataManager] Error updating data.txt:', err.message);
-    throw err;
   }
 }
 
@@ -77,6 +80,10 @@ function updateDataFile(updates) {
  */
 function logConversion(id, input, output, status, durationSec) {
   try {
+    if (!fs.existsSync(DATA_FILE_PATH)) {
+      console.log(`[dataManager] Conversion #${id} logged (cloud mode, skipping data.txt) - ${status}`);
+      return;
+    }
     const timestamp = new Date().toISOString();
     const logLine = `\nLOG_${id}=${timestamp}|${input}|${output}|${status}|${durationSec}s`;
     fs.appendFileSync(DATA_FILE_PATH, logLine, 'utf-8');

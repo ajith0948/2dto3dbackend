@@ -110,8 +110,8 @@ mongoose.connect(mongoUri)
   });
 
 // ── Start Server ──────────────────────────────────────────────────────
-const PORT = parseInt(config.BACKEND_PORT || '5000');
-const HOST = config.BACKEND_HOST || 'localhost';
+const PORT = process.env.PORT || parseInt(config.BACKEND_PORT || '5000');
+const HOST = '0.0.0.0';
 
 app.listen(PORT, HOST, () => {
   console.log(`[Server] Backend running at http://${HOST}:${PORT}`);
