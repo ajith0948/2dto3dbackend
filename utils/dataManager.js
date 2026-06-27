@@ -7,17 +7,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_FILE_PATH = path.join('D:', '2d-to-3d', 'data.txt');
+const DATA_FILE_PATH = process.env.DATA_FILE_PATH || path.join(__dirname, '..', '..', 'data.txt');
 
 /**
  * Read and parse data.txt into a key-value object.
  * Lines starting with # are comments and are skipped.
+ * Returns empty config if data.txt is missing (expected on cloud deployments).
  */
 function readDataFile() {
   try {
     if (!fs.existsSync(DATA_FILE_PATH)) {
-      console.error('[dataManager] CRITICAL: data.txt not found at', DATA_FILE_PATH);
-      process.exit(1);
+      console.warn('[dataManager] data.txt not found — using environment variables only (cloud mode).');
+      return {};
     }
     const content = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
     const config = {};
